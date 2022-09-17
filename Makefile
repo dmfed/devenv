@@ -1,4 +1,4 @@
-# username to create in installed sytem
+# username to create in installed system
 USR=$(shell whoami)
 
 # hostname to use for container
@@ -20,7 +20,6 @@ BINHOME=$(HOME)/.local/bin
 BINPATH=$(BINHOME)/$(BASENAME)-up.sh
 
 build:
-	$(info Starting build...)
 	$(info USER: $(USR))
 	$(info IMAGE NAME: $(IMAGE))
 	$(info HOST NAME: $(HST))
@@ -30,19 +29,18 @@ build:
 		--build-arg GID=$(DOCKER_GID) \
 		-t $(IMAGE) \
 		-f Dockerfile .
+	docker image ls $(IMAGE)
 
 run: 
 	docker run -it --rm -v $(shell pwd):/mnt -h $(HST) $(IMAGE)
 
 install:
-	$(info Installing to $(BINPATH))
+	$(info installing script to $(BINPATH))
 	set -e
 	mkdir -p $(BINHOME)
 	echo 'docker run -it --rm -v $(HOME):/home/$(USR) -h $(HST) $(IMAGE)' > $(BINPATH)
 	chmod +x $(BINPATH)
 	ls -l $(BINPATH)
-	$(info Done...)
-	$(info You can now command $(BINPATH) to run your container)
 
 all: build install
 
