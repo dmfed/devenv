@@ -17,7 +17,7 @@ useradd --uid $UID \
 # make sure unprivileged users will have passwordless sudo
 sed -i /etc/sudoers -re 's/^%sudo.*/%sudo ALL=(ALL:ALL) NOPASSWD: ALL/g'
 
-# creae home dir and cd into it
+# create home dir and cd into it
 mkdir -p /home/$USERNAME && cd /home/$USERNAME
 
 # switch to unprivileged user
