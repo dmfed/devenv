@@ -1,0 +1,9 @@
+curl
+wget
+openssh-client
+ca-certificates
+tzdata
+git
+make
+build-essential
+neovim

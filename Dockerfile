@@ -3,30 +3,32 @@ FROM ubuntu:22.04 AS ubuntu
 # setting non-interactive mode for apt
 ENV DEBIAN_FRONTEND=noninteractive
 
-# update system and install very basic stuff
+# update system and install the required stuff
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y --no-install-recommends \
-gosu sudo curl wget openssh-client ca-certificates tzdata
+gosu sudo 
 
-# install basic dev stuff
-RUN apt-get install -y --no-install-recommends git make build-essential
+# install packages appearing in packages.list
+# clean up chache and remove package lists
+COPY ./packages.list /tmp
+RUN xargs apt-get install -y --no-install-recommends </tmp/packages.list && \
+apt-get clean && \
+rm -rf /var/lib/apt/lists/* && \
+rm /tmp/packages.list
 
-# PUT YOUR PACKAGES OF CHOICE HERE
-RUN apt-get install -y --no-install-recommends neovim
 
-# cleanup
-RUN apt-get clean
-RUN rm -rf /var/lib/apt/lists/*
-
-# install vanilla Go 1.18.6
-RUN curl --location https://go.dev/dl/go1.18.6.linux-amd64.tar.gz -o /tmp/go.tar.gz && \
-tar -xzvf /tmp/go.tar.gz -C /usr/local && \
-rm /tmp/go.tar.gz && \
-ln -s /usr/local/go/bin/* /usr/bin
+# copy and run scripts from custom directory
+# which are intended to install and bake something
+# into the image which we can not install via 
+# package manager
+COPY ./build_time_scripts.sh /tmp
+COPY ./custom /tmp/custom
+RUN /tmp/build_time_scripts.sh /tmp/custom && \
+rm -rf /tmp/build_time_scripts.sh /tmp/custom
 
 # at last set unprivileged user username and gid/uid 
 # these will be picked by entrypoint script at run time
-# and user with cpecified uig/gid will be created 
+# and user with specified uig/gid will be created.
 # these can be redefined with 
 # docker run --env USERNAME=myuser etc.
 ENV USERNAME=developer

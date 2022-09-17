@@ -20,5 +20,7 @@ sed -i /etc/sudoers -re 's/^%sudo.*/%sudo ALL=(ALL:ALL) NOPASSWD: ALL/g'
 # create home dir and cd into it
 mkdir -p /home/$USERNAME && cd /home/$USERNAME
 
-# switch to unprivileged user
+# switch to unprivileged user and substitute 
+# shell with whatever has been passed to us as
+# arguments
 exec gosu $USERNAME:$USERNAME $@

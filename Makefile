@@ -9,7 +9,7 @@ IMAGE_NAME=$(BASENAME):$(USR)
 BINHOME=$(HOME)/.local/bin
 
 # full path to run script
-RUN_SCRIPT_PATH=$(BINHOME)/$(BASENAME)-$(USR)-up.sh
+RUN_SCRIPT_NAME=$(BASENAME)-$(USR)-up.sh
 
 build:
 	$(info BUILDING IMAGE NAME: $(IMAGE_NAME))
@@ -18,22 +18,23 @@ build:
 		-f Dockerfile .
 	docker image ls $(IMAGE_NAME)
 
-run: 
-	docker run -it --rm -v $(shell pwd):/mnt -h $(shell hostname)-docker $(IMAGE_NAME)
-
-install:
-	$(info installing script to $(RUN_SCRIPT_PATH))
-	set -e
-	mkdir -p $(BINHOME)
+script: 
+	$(info creating run script $RUN_SCRIPT_NAME)
 	echo 'docker run -it --rm \
 		-v $$HOME:/home/$(USR) \
 		-h $$(hostname)-docker \
 		--env USERNAME=$$(whoami) \
 		--env GID=$$(id -g) \
 		--env UID=$$(id -u) \
-		$(IMAGE_NAME)' > $(RUN_SCRIPT_PATH)
-	chmod +x $(RUN_SCRIPT_PATH)
-	ls -l $(RUN_SCRIPT_PATH)
+		$(IMAGE_NAME)' > ./$(RUN_SCRIPT_NAME)
+	chmod +x $(RUN_SCRIPT_NAME)
+
+install: script
+	$(info installing script to $(BINHOME)/$(RUN_SCRIPT_NAME))
+	set -e
+	mkdir -p $(BINHOME)
+	mv $(RUN_SCRIPT_NAME) $(BINHOME)
+	ls -l $(BINHOME)/$(RUN_SCRIPT_NAME)
 
 all: build install
 
