@@ -19,7 +19,7 @@ build:
 	docker image ls $(IMAGE_NAME)
 
 run: 
-	docker run -it --rm -v $(shell pwd):/mnt -h $(shell hosname)-docker $(IMAGE_NAME)
+	docker run -it --rm -v $(shell pwd):/mnt -h $(shell hostname)-docker $(IMAGE_NAME)
 
 install:
 	$(info installing script to $(RUN_SCRIPT_PATH))
