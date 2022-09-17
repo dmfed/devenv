@@ -1,46 +1,39 @@
-# username to create in installed system
+# get username
 USR=$(shell whoami)
-
-# hostname to use for container
-HST=$(shell hostname)-docker
-
-DOCKER_UID=$(shell id -u)
-DOCKER_GID=$(shell id -g)
 
 #image basename
 BASENAME=devenv
-
-# image name to use when building
-IMAGE=$(BASENAME):$(USR)
+IMAGE_NAME=$(BASENAME):$(USR)
 
 # path to local directory to put run script
 BINHOME=$(HOME)/.local/bin
 
 # full path to run script
-BINPATH=$(BINHOME)/$(BASENAME)-up.sh
+RUN_SCRIPT_PATH=$(BINHOME)/$(BASENAME)-$(USR)-up.sh
 
 build:
-	$(info USER: $(USR))
-	$(info IMAGE NAME: $(IMAGE))
-	$(info HOST NAME: $(HST))
+	$(info BUILDING IMAGE NAME: $(IMAGE_NAME))
 	docker build \
-		--build-arg USERNAME=$(USR) \
-		--build-arg UID=$(DOCKER_UID) \
-		--build-arg GID=$(DOCKER_GID) \
-		-t $(IMAGE) \
+		-t $(IMAGE_NAME) \
 		-f Dockerfile .
-	docker image ls $(IMAGE)
+	docker image ls $(IMAGE_NAME)
 
 run: 
-	docker run -it --rm -v $(shell pwd):/mnt -h $(HST) $(IMAGE)
+	docker run -it --rm -v $(shell pwd):/mnt -h $(shell hosname)-docker $(IMAGE_NAME)
 
 install:
-	$(info installing script to $(BINPATH))
+	$(info installing script to $(RUN_SCRIPT_PATH))
 	set -e
 	mkdir -p $(BINHOME)
-	echo 'docker run -it --rm -v $(HOME):/home/$(USR) -h $(HST) $(IMAGE)' > $(BINPATH)
-	chmod +x $(BINPATH)
-	ls -l $(BINPATH)
+	echo 'docker run -it --rm \
+		-v $$HOME:/home/$(USR) \
+		-h $$(hostname)-docker \
+		--env USERNAME=$$(whoami) \
+		--env GID=$$(id -g) \
+		--env UID=$$(id -u) \
+		$(IMAGE_NAME)' > $(RUN_SCRIPT_PATH)
+	chmod +x $(RUN_SCRIPT_PATH)
+	ls -l $(RUN_SCRIPT_PATH)
 
 all: build install
 
