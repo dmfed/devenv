@@ -24,11 +24,11 @@ tar -xzvf /tmp/go.tar.gz -C /usr/local && \
 rm /tmp/go.tar.gz && \
 ln -s /usr/local/go/bin/* /usr/bin
 
-# at last create unprivileged user
-# username and gid/uid can be redefined
-# at build time
-# if IDs match local users ones then local 
-# users home dir can be mounted into the image
+# at last set unprivileged user username and gid/uid 
+# these will be picked by entrypoint script at run time
+# and user with cpecified uig/gid will be created 
+# these can be redefined with 
+# docker run --env USERNAME=myuser etc.
 ENV USERNAME=developer
 ENV GID=1001
 ENV UID=1001
