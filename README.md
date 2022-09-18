@@ -52,7 +52,7 @@ make script
 
 ## Create and install launch script
 This will create the launch script (see above) and place it into you
-$HOME/.local/bin creating the directory is it does not exist.
+**$HOME/.local/bin** creating the directory is if does not exist.
 ```bash
 make install 
 ```
