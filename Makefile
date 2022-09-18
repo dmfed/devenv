@@ -19,7 +19,7 @@ build:
 	docker image ls $(IMAGE_NAME)
 
 script: 
-	$(info creating run script $RUN_SCRIPT_NAME)
+	$(info creating run script $(RUN_SCRIPT_NAME))
 	echo 'docker run -it --rm \
 		-v $$HOME:/home/$(USR) \
 		-h $$(hostname)-docker \

@@ -33,16 +33,19 @@ variables to docker run.
 If no environment variables were passed to docker run, the unprivileged user will
 default to **developer:developer** with uig/gid **1001:1001**.
 
-By default the user has passwordless sudo.
+By default the unprivileged user created by entrpoint script has passwordless sudo.
+If this is not the desired behaviour - consider editing **entrypoint.sh** before
+building the image.
 
 ## Create launch script
-This will create a bash script that runs the container from the image 
+This will create a bash script that runs the Docker container from the image 
 built above with your current username, uid and gid. Since username, uid and 
 gid are the same as in your host system you can safely mount anything from 
 your host system into container without creating mess in host OS.
 
 By default the launch script mounts your home directory into the unprivileged 
-user's home in the container. Edit as approprite.
+user's home in the container. Edit the produced script as  approprite if this 
+is not the desired behaviour.
 ```bash
 make script
 ```
