@@ -6,5 +6,4 @@ tzdata
 git
 make
 build-essential
-neovim
 tree
