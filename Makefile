@@ -21,7 +21,7 @@ build:
 script: 
 	$(info creating run script $(RUN_SCRIPT_NAME))
 	echo 'docker run -it --rm \
-		-v $$HOME:/home/$(USR) \
+		-v $$HOME:/home/$$(whoami) \
 		-h $$(hostname)-docker \
 		--env USERNAME=$$(whoami) \
 		--env GID=$$(id -g) \
